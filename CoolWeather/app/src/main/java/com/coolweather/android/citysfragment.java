@@ -3,22 +3,16 @@ package com.coolweather.android;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +20,6 @@ import android.widget.Toast;
 import com.coolweather.android.db.Mycitys;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
-import com.coolweather.android.service.AutoUpdateService;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -40,15 +33,10 @@ import okhttp3.Response;
 
 @SuppressLint("ValidFragment")
 public class citysfragment extends Fragment {
-    public DrawerLayout drawerLayout;
 
     public SwipeRefreshLayout swipeRefresh;
 
     private ScrollView weatherLayout;
-
-//    private Button navButton;
-
-//    private TextView titleCity;
 
     private TextView titleUpdateTime;
 
@@ -70,7 +58,7 @@ public class citysfragment extends Fragment {
 
     private String mWeatherId;
 
-    private LinearLayout now;
+    private RelativeLayout showdetails;
 
     private LinearLayout now_details;
 
@@ -102,10 +90,14 @@ public class citysfragment extends Fragment {
         return cityname;
     }
 
+    public citysfragment(){
+
+    }
+
     @SuppressLint("ValidFragment")
-    public citysfragment(String[] city){
-        this.mWeatherId=city[0];
-        this.cityname=city[1];
+    public citysfragment(String name,String id){
+        this.mWeatherId=id;
+        this.cityname=name;
     }
 
     @Override
@@ -119,7 +111,6 @@ public class citysfragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.citys_fragment,container,false);
         weatherLayout = (ScrollView) view.findViewById(R.id.weather_layout);
-//        titleCity = (TextView) view.findViewById(R.id.title_city);
         titleUpdateTime = (TextView) view.findViewById(R.id.title_update_time);
         degreeText = (TextView) view.findViewById(R.id.degree_text);
         weatherInfoText = (TextView) view.findViewById(R.id.weather_info_text);
@@ -131,9 +122,7 @@ public class citysfragment extends Fragment {
         sportText = (TextView) view.findViewById(R.id.sport_text);
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
-        drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
-//        navButton = (Button) view.findViewById(R.id.nav_button);
-        now=(LinearLayout) view.findViewById(R.id.now);
+        showdetails=(RelativeLayout) view.findViewById(R.id.showdetails);
         now_details=(LinearLayout) view.findViewById(R.id.now_details);
         return view;
     }
@@ -149,7 +138,7 @@ public class citysfragment extends Fragment {
                 detailheight= now_details.getMeasuredHeight();
             }
         });
-        now.setOnClickListener(new View.OnClickListener() {
+        showdetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ValueAnimator va;
@@ -178,8 +167,6 @@ public class citysfragment extends Fragment {
             }
         });
         //获取数据
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-//        String weatherString = prefs.getString("weather", null);
         String weatherString= DataSupport.where("weatherId = ?",mWeatherId).findFirst(Mycitys.class).getResponsetext();
         if (weatherString != null) {
             // 有缓存时直接解析天气数据
@@ -198,12 +185,6 @@ public class citysfragment extends Fragment {
                 requestWeather(mWeatherId);
             }
         });
-//        navButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                drawerLayout.openDrawer(GravityCompat.START);
-//            }
-//        });
     }
 
     /**
@@ -221,10 +202,6 @@ public class citysfragment extends Fragment {
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
                             //保存数据
-//                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-//                            editor.putString("weather", responseText);
-//                            editor.apply();
-//                            mWeatherId = weather.basic.weatherId;
                             Mycitys mycitys=new Mycitys();
                             mycitys.setCityName(weather.basic.cityName);
                             mycitys.setResponsetext(responseText);
@@ -263,11 +240,9 @@ public class citysfragment extends Fragment {
      * 处理并展示Weather实体类中的数据。
      */
     private void showWeatherInfo(Weather weather) {
-        String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.more.info;
-//        titleCity.setText(cityName);
         titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
         loadNow_details(weather);
@@ -296,8 +271,6 @@ public class citysfragment extends Fragment {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(context, AutoUpdateService.class);
-        context.startService(intent);
     }
 
     /**

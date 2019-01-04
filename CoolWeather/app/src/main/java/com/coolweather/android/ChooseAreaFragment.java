@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import com.coolweather.android.db.Mycitys;
 import com.coolweather.android.db.Province;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
+import com.coolweather.android.util.staticvalues;
 
 import org.litepal.crud.DataSupport;
 
@@ -111,26 +111,35 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
+                    String cityname=countyList.get(position).getCountyName();
                     if (getActivity() instanceof MainActivity) {
-//                        if(DataSupport.findAll(Mycitys.class).size()>3){
-//                            Toast.makeText(getActivity(),"最多只能设置3个城市",Toast.LENGTH_SHORT).show();
-//                        }
-//                        else{
-                            Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                            intent.putExtra("weather_id", weatherId);
-                            startActivity(intent);
-//                        }
+                        Mycitys mycity=new Mycitys();
+                        mycity.setWeatherId(weatherId);
+                        mycity.setCityName(cityname);
+                        mycity.save();
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        startActivity(intent);
                         getActivity().finish();
-                    } else if (getActivity() instanceof WeatherActivity) {
-                        WeatherActivity activity = (WeatherActivity) getActivity();
-                        activity.drawerLayout.closeDrawers();
-                        activity.swipeRefresh.setRefreshing(true);
-                        activity.requestWeather(weatherId);
                     }
-//                    else(getActivity() instanceof CitysActivity){
-//                        WeatherActivity activity=(WeatherActivity) getActivity();
-//
-//                    }
+                    else if(getActivity() instanceof CitysActivity){
+                        if(DataSupport.findAll(Mycitys.class).size()>2){
+                            Toast.makeText(getActivity(),"最多只能设置3个城市",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(DataSupport.where("weatherId = ?",weatherId).find(Mycitys.class).size()>0){
+                            Toast.makeText(getActivity(),"已添加城市",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Mycitys mycity=new Mycitys();
+                            mycity.setWeatherId(weatherId);
+                            mycity.setCityName(cityname);
+                            mycity.save();
+                            staticvalues.newcity=new String[2];
+                            staticvalues.newcity[0]=cityname;
+                            staticvalues.newcity[1]=weatherId;
+                            staticvalues.ischange=true;
+                            getActivity().finish();
+                        }
+                    }
                 }
             }
         });

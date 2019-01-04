@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
@@ -15,43 +16,41 @@
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:fitsSystemWindows="true">
 
-            <ScrollView
-                android:id="@+id/weather_layout"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"
-                android:overScrollMode="never">
+                android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tab"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fitsSystemWindows="true">
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginRight="100dp"
+                    android:layout_gravity="center_horizontal"
+                    app:tabTextAppearance="@style/TabLayoutTextSize"
+                    app:tabIndicatorColor="@android:color/white"
+                    app:tabSelectedTextColor="@android:color/white"
+                    app:tabTextColor="@android:color/darker_gray" />
 
-                    <include layout="@layout/title" />
+                <include layout="@layout/title"/>
+            </FrameLayout>
 
-                    <include layout="@layout/now" />
 
-                    <include layout="@layout/now_details"/>
-
-                    <include layout="@layout/forecast" />
-
-                    <include layout="@layout/aqi" />
-
-                    <include layout="@layout/suggestion" />
-
-                </LinearLayout>
-
-            </ScrollView>
-
-        </android.support.v4.widget.SwipeRefreshLayout>
+            <android.support.v4.view.ViewPager
+                android:layout_below="@+id/topPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/viewpager"/>
+        </LinearLayout>
 
         <fragment
             android:id="@+id/choose_area_fragment"
@@ -60,7 +59,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             tools:layout="@layout/fragment_setting" />
-
     </android.support.v4.widget.DrawerLayout>
+
 
 </FrameLayout>

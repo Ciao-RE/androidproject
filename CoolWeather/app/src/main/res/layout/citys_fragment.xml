@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!--<android.support.v4.widget.DrawerLayout-->
+        <!--android:id="@+id/drawer_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
@@ -25,7 +25,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fitsSystemWindows="true">
+                    >
 
                     <!--<include layout="@layout/title" />-->
 
@@ -45,14 +45,14 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <fragment
-            android:id="@+id/choose_area_fragment"
-            android:name="com.coolweather.android.SettingFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            tools:layout="@layout/fragment_setting" />
+        <!--<fragment-->
+            <!--android:id="@+id/choose_area_fragment"-->
+            <!--android:name="com.coolweather.android.SettingFragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="start"-->
+            <!--tools:layout="@layout/fragment_setting" />-->
 
-    </android.support.v4.widget.DrawerLayout>
+    <!--</android.support.v4.widget.DrawerLayout>-->
 
 </FrameLayout>

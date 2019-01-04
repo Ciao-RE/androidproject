@@ -2,11 +2,12 @@ package com.coolweather.android;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 import java.util.ArrayList;
 
-public class viewpagerAdapter extends FragmentPagerAdapter {
+public class viewpagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<citysfragment> list;
     public viewpagerAdapter(FragmentManager fm, ArrayList<citysfragment> list) {
@@ -16,7 +17,10 @@ public class viewpagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return list.get(position);
+        if (list != null && position < list.size()) {
+            return list.get(position);
+        }
+        return null;
     }
 
     @Override
@@ -27,5 +31,10 @@ public class viewpagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return list.get(position).getCityname();
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return PagerAdapter.POSITION_NONE;
     }
 }
